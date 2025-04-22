@@ -1,0 +1,27 @@
+name: HTML Service Test
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  prueba-html:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build Docker image
+      run: docker build -t prueba1-html .
+
+    - name: Run HTML container
+      run: docker run -d -p 8080:80 --name html-test prueba1-html
+
+    - name: Probar servicio HTML
+      run: |
+        curl -s http://localhost:8080 | grep -q "Hola mundo"
+
+    - name: Cleanup
+      if: always()
+      run: docker rm -f html-test
